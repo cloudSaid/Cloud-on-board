@@ -8,6 +8,8 @@
         <option value="$PROJECT_DIR$/service-verificationcode/pom.xml" />
         <option value="$PROJECT_DIR$/internal-common/pom.xml" />
         <option value="$PROJECT_DIR$/service-passenger-user/pom.xml" />
+        <option value="$PROJECT_DIR$/service-price/pom.xml" />
+        <option value="$PROJECT_DIR$/serice-map/pom.xml" />
       </list>
     </option>
   </component>
