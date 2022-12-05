@@ -1,0 +1,12 @@
+server:
+  port: 8081
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+  application:
+    name: api-passengers
+  redis:
+    host: 43.143.1.156
+    password: Yw2358699185/
