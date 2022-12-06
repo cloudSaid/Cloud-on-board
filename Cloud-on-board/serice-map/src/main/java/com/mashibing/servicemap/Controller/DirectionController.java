@@ -3,6 +3,7 @@ package com.mashibing.servicemap.Controller;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.ForecastPriceDTO;
 import com.mashibing.servicemap.Service.DirectionService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022-12-06 2:40
  */
 @RestController
+@Slf4j
 public class DirectionController {
     @Autowired
     private DirectionService directionService;
@@ -27,6 +29,9 @@ public class DirectionController {
         //目的地经纬度
         String destLongitude = forecastPriceDTO.getDestLongitude();
         String destLatitude = forecastPriceDTO.getDestLatitude();
-        return directionService.direction(depLongitude,depLatitude,destLongitude,destLatitude);
+        
+        ResponseResult directionResponseResult = directionService.direction(depLongitude, depLatitude, destLongitude, destLatitude);
+        log.info(directionResponseResult.toString());
+        return directionResponseResult;
     }
 }
