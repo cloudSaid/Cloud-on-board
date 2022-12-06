@@ -29,7 +29,7 @@ public class DirectionController {
         //目的地经纬度
         String destLongitude = forecastPriceDTO.getDestLongitude();
         String destLatitude = forecastPriceDTO.getDestLatitude();
-        
+
         ResponseResult directionResponseResult = directionService.direction(depLongitude, depLatitude, destLongitude, destLatitude);
         log.info(directionResponseResult.toString());
         return directionResponseResult;

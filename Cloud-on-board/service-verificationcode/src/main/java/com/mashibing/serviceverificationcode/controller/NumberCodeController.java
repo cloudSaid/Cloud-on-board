@@ -25,4 +25,6 @@ public class NumberCodeController {
         response.setNumberCode(numberCode);
         return ResponseResult.success(response);
     }
+
+
 }

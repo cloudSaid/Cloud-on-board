@@ -29,7 +29,7 @@ public class ForecastPriceController
         //目的地经纬度
         String destLongitude = forecastPriceDTO.getDestLongitude();
         String destLatitude = forecastPriceDTO.getDestLatitude();
-        return forecastPriceService.forecastPrice(depLongitude,depLatitude,destLongitude,destLatitude);
+        return forecastPriceService.forecastPrice(forecastPriceDTO);
 
     }
 
