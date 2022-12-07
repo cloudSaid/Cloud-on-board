@@ -3,6 +3,15 @@ package com.mashibing.internalcommon.constant;
 import com.mashibing.internalcommon.dto.PassengerUser;
 
 public class OrderConstants {
+    //初始价格
+    public static final Double INITIAL_PRICE = 0d;
+
+    //距离除数常量1000
+    public static final int DISTANCE_DIVISOR = 1000;
+
+    //秒转分钟
+    public static final int MINUTE_DIVISOR = 60;
+
     // 0：订单无效
     public static final int ORDER_INVALID = 0;
     // 1：订单开始

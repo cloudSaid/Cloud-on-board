@@ -15,22 +15,19 @@ import org.springframework.web.bind.annotation.RestController;
  * @date 2022-12-06 2:20
  */
 @RestController
+@RequestMapping("/forecast")
 public class ForecastPriceController
 {
     @Autowired
     private ForecastPriceService forecastPriceService;
 
-    @RequestMapping("forecast-price")
+    @RequestMapping("/price")
     public ResponseResult forecastPrice(@RequestBody ForecastPriceDTO forecastPriceDTO)
     {
-        //出发点经纬度
-        String depLongitude = forecastPriceDTO.getDepLongitude();
-        String depLatitude = forecastPriceDTO.getDepLatitude();
-        //目的地经纬度
-        String destLongitude = forecastPriceDTO.getDestLongitude();
-        String destLatitude = forecastPriceDTO.getDestLatitude();
-        return forecastPriceService.forecastPrice(forecastPriceDTO);
+        //获取计算完的额价格
+        ResponseResult priceResult = forecastPriceService.forecastPrice(forecastPriceDTO);
 
+        return priceResult;
     }
 
 }
