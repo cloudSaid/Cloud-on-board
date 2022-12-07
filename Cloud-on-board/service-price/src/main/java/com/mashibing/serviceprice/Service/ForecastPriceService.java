@@ -33,10 +33,9 @@ public class ForecastPriceService {
 
     public ResponseResult forecastPrice(ForecastPriceDTO forecastPriceDTO)
     {
-        ResponseResult direction = mapClient.direction(forecastPriceDTO);
-        log.info(direction.toString());
+        DirectionResponse directionResponse = mapClient.direction(forecastPriceDTO);
+        log.info(directionResponse.toString());
 
-         DirectionResponse directionResponse = (DirectionResponse) direction.getData();
          //距离
         Integer distance = directionResponse.getDistance();
         //时间
@@ -48,6 +47,8 @@ public class ForecastPriceService {
         PriceRule priceRule = priceMapper.selectOne(null);
 
         double price = getPrice(distance, duration, priceRule);
+
+        log.info("价格为" + price);
 
         ForecastPriceResponse forecastPriceResponse = new ForecastPriceResponse();
         forecastPriceResponse.setPrice(price);

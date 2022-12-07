@@ -2,6 +2,7 @@ package com.mashibing.servicemap.Controller;
 
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.ForecastPriceDTO;
+import com.mashibing.internalcommon.responese.DirectionResponse;
 import com.mashibing.servicemap.Service.DirectionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +24,7 @@ public class DirectionController {
     private DirectionService directionService;
 
     @GetMapping("/direction/driving")
-    public ResponseResult direction(@RequestBody ForecastPriceDTO forecastPriceDTO){
+    public DirectionResponse direction(@RequestBody ForecastPriceDTO forecastPriceDTO){
         //出发点经纬度
         String depLongitude = forecastPriceDTO.getDepLongitude();
         String depLatitude = forecastPriceDTO.getDepLatitude();
@@ -31,7 +32,7 @@ public class DirectionController {
         String destLongitude = forecastPriceDTO.getDestLongitude();
         String destLatitude = forecastPriceDTO.getDestLatitude();
 
-        ResponseResult directionResponseResult = directionService.direction(depLongitude, depLatitude, destLongitude, destLatitude);
+        DirectionResponse directionResponseResult = directionService.direction(depLongitude, depLatitude, destLongitude, destLatitude);
         log.info(directionResponseResult.toString());
         return directionResponseResult;
     }

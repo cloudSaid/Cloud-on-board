@@ -28,9 +28,9 @@ public class DirectionService {
      * @param destLatitude
      * @return
      */
-    public ResponseResult direction(String depLongitude, String depLatitude, String destLongitude, String destLatitude) {
+    public DirectionResponse direction(String depLongitude, String depLatitude, String destLongitude, String destLatitude) {
         DirectionResponse direction = mapDirectionClient.direction(depLongitude, depLatitude, destLongitude, destLatitude);
         log.info(direction.toString());
-        return ResponseResult.success(direction);
+        return direction;
     }
 }

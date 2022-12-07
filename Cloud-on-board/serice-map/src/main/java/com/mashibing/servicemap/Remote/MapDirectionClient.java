@@ -45,8 +45,7 @@ public class MapDirectionClient
 
         System.out.println(stringBuilder.toString());
         //https://restapi.amap.com/v3/direction/driving?origin=116.481028,39.989643&destination=116.465302,40.004717&extensions=all&output=xml&key=<用户的key>
-        //https://restapi.amap.com/v3/direction/driving?origins=116.508051,39.875399&destination116.604868,39.794463&extensions=base&output=json&key=2e471066e658217c93e47e4902c8a79d
-
+       // https://restapi.amap.com/v3/direction/driving?origin=30.425307,120.308796&destination=30.415974,120.308443&extensions=base&output=json&key=2e471066e658217c93e47e4902c8a79d
         ResponseEntity<String> directionEntity = restTemplate.getForEntity(stringBuilder.toString(), String.class);
         String directionEntityBody = directionEntity.getBody();
         log.info("解析路径...");
