@@ -2,6 +2,7 @@ package com.mashibing.serviceprice.Controller;
 
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.ForecastPriceDTO;
+import com.mashibing.internalcommon.responese.ForecastPriceResponse;
 import com.mashibing.serviceprice.Service.ForecastPriceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,10 +23,10 @@ public class ForecastPriceController
     private ForecastPriceService forecastPriceService;
 
     @RequestMapping("/price")
-    public ResponseResult forecastPrice(@RequestBody ForecastPriceDTO forecastPriceDTO)
+    public ResponseResult<ForecastPriceResponse> forecastPrice(@RequestBody ForecastPriceDTO forecastPriceDTO)
     {
         //获取计算完的额价格
-        ResponseResult priceResult = forecastPriceService.forecastPrice(forecastPriceDTO);
+        ResponseResult<ForecastPriceResponse> priceResult = forecastPriceService.forecastPrice(forecastPriceDTO);
 
         return priceResult;
     }
