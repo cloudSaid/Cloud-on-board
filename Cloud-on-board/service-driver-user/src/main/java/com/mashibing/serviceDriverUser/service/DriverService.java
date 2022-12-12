@@ -1,11 +1,13 @@
 package com.mashibing.serviceDriverUser.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mashibing.internalcommon.dto.DriverUser;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.serviceDriverUser.mapper.DriverUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Driver;
 import java.time.LocalDateTime;
 
 /**
@@ -38,5 +40,16 @@ public class DriverService {
         driverUserMapper.updateById(driverUser);
 
         return ResponseResult.success();
+    }
+
+    public boolean testDriver(String phone){
+
+        Integer testDrivers = driverUserMapper.selectCount(new QueryWrapper<DriverUser>().eq("driver_phone", phone));
+
+        if (testDrivers <= 0){
+            return false;
+        }
+
+        return true;
     }
 }

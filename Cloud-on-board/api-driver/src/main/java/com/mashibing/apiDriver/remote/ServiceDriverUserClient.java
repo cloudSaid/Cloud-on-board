@@ -11,7 +11,7 @@ public interface ServiceDriverUserClient {
     @RequestMapping(method = RequestMethod.PUT, value = "/driverUser")
     ResponseResult updateUser(@RequestBody DriverUser driverUser);
 
-
-
+    @RequestMapping(method = RequestMethod.GET,value = "testDriver")
+    boolean testDriver(String phone);
 
 }

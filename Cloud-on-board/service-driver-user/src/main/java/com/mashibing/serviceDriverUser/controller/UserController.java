@@ -28,4 +28,9 @@ public class UserController {
         return driverService.putUser(driverUser);
     }
 
+    @GetMapping("testDriver")
+    public boolean testDriver(String phone){
+        return driverService.testDriver(phone);
+    }
+
 }
