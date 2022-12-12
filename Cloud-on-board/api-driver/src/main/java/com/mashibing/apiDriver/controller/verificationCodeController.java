@@ -1,9 +1,11 @@
 package com.mashibing.apiDriver.controller;
 import com.mashibing.apiDriver.service.UserService;
 import com.mashibing.internalcommon.dto.ResponseResult;
+import com.mashibing.internalcommon.request.VerificationCodeDTO;
+import com.mashibing.internalcommon.responese.TokenResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author Leo
@@ -19,9 +21,12 @@ public class verificationCodeController
 
     //司机端登陆发送验证ma
     @GetMapping("getVerificationCode")
-    public ResponseResult getVerificationCode(String phone){
-        return userService.getVerificationCode(phone);
+    public ResponseResult getVerificationCode(@RequestBody VerificationCodeDTO verificationCodeDTO){
+        return userService.getVerificationCode(verificationCodeDTO);
     }
-
+    @PostMapping("/verification-code-check")
+    public ResponseResult<TokenResponse> checkCode(@RequestBody VerificationCodeDTO verificationCodeDTO){
+        return userService.checkCode(verificationCodeDTO);
+    }
 
 }
