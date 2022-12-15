@@ -29,7 +29,7 @@ public class TrackClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    public ResponseResult<TrackResponse> addTerminal(String tid){
+    public ResponseResult<TrackResponse> addTrack(String tid){
 
         StringBuilder url = new StringBuilder();
         url.append(AmapConfigConstants.TRACK_ADD);

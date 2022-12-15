@@ -49,4 +49,9 @@ public class CarService
         return ResponseResult.success("");
     }
 
+    public ResponseResult<Car> getCar(Long carId) {
+
+        return ResponseResult.success(carMapper.selectById(carId));
+
+    }
 }

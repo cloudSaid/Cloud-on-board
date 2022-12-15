@@ -15,4 +15,7 @@ public interface ServiceDriverUserClient {
     @RequestMapping(method = RequestMethod.GET,value = "/testDriver")
     boolean testDriver(@RequestBody VerificationCodeDTO verificationCodeDTO);
 
+    @RequestMapping(method = RequestMethod.GET,value = "getCar")
+    ResponseResult<Car> getCar(@PathVariable Long carId);
+
 }

@@ -19,7 +19,7 @@ public class TrackService {
     private TrackClient trackClient;
 
     public ResponseResult<TrackResponse> add(String tid){
-        return trackClient.addTerminal(tid);
+        return trackClient.addTrack(tid);
     }
 
 }

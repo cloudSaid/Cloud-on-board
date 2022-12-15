@@ -4,10 +4,9 @@ import com.mashibing.internalcommon.dto.Car;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.serviceDriverUser.service.CarService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import javax.websocket.server.PathParam;
 
 /**
  * @author Leo
@@ -25,5 +24,11 @@ public class CarController {
     public ResponseResult addCar(@RequestBody Car car){
         return carService.addCar(car);
     }
+
+    @GetMapping("getCar")
+    public ResponseResult<Car> getCar(@PathVariable Long carId){
+        return carService.getCar(carId);
+    }
+
 
 }
