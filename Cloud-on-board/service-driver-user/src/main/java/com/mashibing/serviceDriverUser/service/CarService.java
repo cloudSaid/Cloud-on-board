@@ -3,6 +3,7 @@ package com.mashibing.serviceDriverUser.service;
 import com.mashibing.internalcommon.dto.Car;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.responese.TerminalResponse;
+import com.mashibing.internalcommon.responese.TrackResponse;
 import com.mashibing.serviceDriverUser.mapper.CarMapper;
 import com.mashibing.serviceDriverUser.remote.MapClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,14 @@ public class CarService
         //通过地图服务注册车辆获取其tid
         ResponseResult<TerminalResponse> responseResult = mapClient.addTerminal(car.getVehicleNo());
         TerminalResponse terminalResponse = responseResult.getData();
-        car.setTid(terminalResponse.getTid());
+        String tid = terminalResponse.getTid();
+        //通过tid创建轨迹获得trid
+        ResponseResult<TrackResponse> trackResponseResponseResult = mapClient.add(tid);
+        TrackResponse trackResponse = trackResponseResponseResult.getData();
+        String trid = trackResponse.getTrid();
+
+        car.setTrid(trid);
+        car.setTid(tid);
         carMapper.insert(car);
 
         return ResponseResult.success("");

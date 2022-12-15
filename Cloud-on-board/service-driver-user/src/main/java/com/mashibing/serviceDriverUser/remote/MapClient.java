@@ -2,6 +2,7 @@ package com.mashibing.serviceDriverUser.remote;
 
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.responese.TerminalResponse;
+import com.mashibing.internalcommon.responese.TrackResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,4 +19,9 @@ public interface MapClient {
 
     @RequestMapping(method = RequestMethod.POST,value = "addTerminal")
     ResponseResult<TerminalResponse> addTerminal(String terminalName);
+
+    @RequestMapping("addTrack")
+    ResponseResult<TrackResponse> add(String tid);
+
+
 }
