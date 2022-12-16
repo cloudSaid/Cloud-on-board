@@ -18,8 +18,12 @@ public class TerminalService {
     @Autowired
     private TerminalClient terminalClient;
 
-    public ResponseResult<TerminalResponse> addTerminal(String terminalName){
-        return terminalClient.addTerminal(terminalName);
+    public ResponseResult<TerminalResponse> addTerminal(String terminalName , String desc){
+        return terminalClient.addTerminal(terminalName,desc);
+    }
+
+    public ResponseResult aroundsearch(String center,String radius){
+        return terminalClient.aroundsearch(center,radius);
     }
 
 

@@ -5,6 +5,7 @@ import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.responese.ServiceResponse;
 import com.mashibing.internalcommon.responese.TerminalResponse;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.xml.ws.Response;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author Leo
@@ -33,7 +37,7 @@ public class TerminalClient {
     @Autowired
     private RestTemplate restTemplate;
 
-    public ResponseResult<TerminalResponse> addTerminal(String TerminalName){
+    public ResponseResult<TerminalResponse> addTerminal(String TerminalName , String desc){
 
         StringBuilder url = new StringBuilder();
         url.append(AmapConfigConstants.TERMINAL_ADD);
@@ -43,6 +47,8 @@ public class TerminalClient {
         url.append("sid="+sid);
         url.append("&");
         url.append("name="+TerminalName);
+        url.append("&");
+        url.append("desc="+desc);
 
         ResponseEntity<String> forEntity = restTemplate.postForEntity(url.toString(), null,String.class);
         String body = forEntity.getBody();
@@ -53,6 +59,39 @@ public class TerminalClient {
         terminalResponse.setTid(tid);
 
         return ResponseResult.success(terminalResponse);
+    }
+
+    public ResponseResult aroundsearch(String center,String radius){
+        StringBuilder url = new StringBuilder();
+        url.append(AmapConfigConstants.TERMINAL_ADD);
+        url.append("?");
+        url.append("key="+amapKey);
+        url.append("&");
+        url.append("sid="+sid);
+        url.append("&");
+        url.append("center="+center);
+        url.append("&");
+        url.append("radius="+radius);
+
+        ResponseEntity<String> forEntity = restTemplate.postForEntity(url.toString(), null,String.class);
+        String body = forEntity.getBody();
+        JSONObject result = JSONObject.fromObject(body);
+        JSONObject data = result.getJSONObject("data");
+        JSONArray results = data.getJSONArray("results");
+
+        List<TerminalResponse> terminalResponseArrayList = new ArrayList<>();
+
+        for (int i = 0;i < results.size();i++){
+            TerminalResponse terminalResponse = new TerminalResponse();
+            JSONObject carResultInfo = results.getJSONObject(i);
+            long carId = carResultInfo.getLong("desc");
+            String tid = carResultInfo.getString("tid");
+            terminalResponse.setCarId(carId);
+            terminalResponse.setTid(tid);
+            terminalResponseArrayList.add(terminalResponse);
+        }
+
+        return ResponseResult.success(terminalResponseArrayList);
     }
 
 

@@ -5,6 +5,7 @@ import com.mashibing.internalcommon.responese.TrackResponse;
 import com.mashibing.servicemap.Service.TrackService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -20,7 +21,7 @@ public class TrackController {
     private TrackService trackService;
 
     @RequestMapping("addTrack")
-    public ResponseResult<TrackResponse> add(String tid){
+    public ResponseResult<TrackResponse> add(@RequestParam String tid){
 
        return trackService.add(tid);
 

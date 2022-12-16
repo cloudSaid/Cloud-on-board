@@ -7,6 +7,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
  * @author Leo
@@ -18,10 +19,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public interface MapClient {
 
     @RequestMapping(method = RequestMethod.POST,value = "addTerminal")
-    ResponseResult<TerminalResponse> addTerminal(String terminalName);
+    ResponseResult<TerminalResponse> addTerminal(@RequestParam String terminalName ,@RequestParam String desc);
 
     @RequestMapping("addTrack")
-    ResponseResult<TrackResponse> add(String tid);
+    ResponseResult<TrackResponse> add(@RequestParam String tid);
 
 
 }

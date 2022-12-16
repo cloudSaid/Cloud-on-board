@@ -19,11 +19,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class TerminalController {
 
     @Autowired
-    private TerminalService terminalClient;
+    private TerminalService terminalService;
 
     @PostMapping("addTerminal")
-    public ResponseResult<TerminalResponse> addTerminal(@RequestParam("terminalName") String terminalName){
-        return terminalClient.addTerminal(terminalName);
+    public ResponseResult<TerminalResponse> addTerminal(@RequestParam String terminalName , @RequestParam String desc){
+        return terminalService.addTerminal(terminalName,desc);
+    }
+
+    @PostMapping("aroundsearch")
+    public ResponseResult aroundsearch(String center,String radius){
+        return terminalService.aroundsearch(center,radius);
     }
 
 }
