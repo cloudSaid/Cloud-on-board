@@ -1,4 +1,4 @@
-package com.mashibing.serviceprice.Mapper;
+package com.mashibing.serviceprice.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mashibing.internalcommon.dto.PriceRule;

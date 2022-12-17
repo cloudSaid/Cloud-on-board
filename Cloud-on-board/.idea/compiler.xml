@@ -13,6 +13,7 @@
         <module name="service-driver-user" />
         <module name="service-verificationcode" />
         <module name="service-price" />
+        <module name="service-order" />
         <module name="service-passenger-user" />
         <module name="serice-map" />
         <module name="api-driver" />
@@ -27,6 +28,7 @@
       <module name="internal-common" options="-parameters" />
       <module name="serice-map" options="-parameters" />
       <module name="service-driver-user" options="-parameters" />
+      <module name="service-order" options="-parameters" />
       <module name="service-passenger-user" options="-parameters" />
       <module name="service-price" options="-parameters" />
       <module name="service-verificationcode" options="-parameters" />
