@@ -27,12 +27,15 @@ public class PriceRuleService {
     @Autowired
     PriceRuleMapper priceRuleMapper;
 
+    /*
+    * 添加计价规则
+    * */
     public ResponseResult add(PriceRule priceRule) {
 
         String cityCode = priceRule.getCityCode();
         String vehicleType = priceRule.getVehicleType();
         //拼接FareType
-        priceRule.setFareType(cityCode + vehicleType);
+        priceRule.setFareType(cityCode + "$" + vehicleType);
 
         //添加版本号
         Map<String, Object> map = new HashMap<>();

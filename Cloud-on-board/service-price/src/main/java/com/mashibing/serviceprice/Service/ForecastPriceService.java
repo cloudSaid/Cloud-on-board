@@ -1,5 +1,7 @@
 package com.mashibing.serviceprice.Service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.conditions.query.QueryChainWrapper;
 import com.mashibing.internalcommon.constant.OrderConstants;
 import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
@@ -12,6 +14,9 @@ import com.mashibing.serviceprice.remote.MapClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author Leo
@@ -42,7 +47,12 @@ public class ForecastPriceService {
         /**
          * 后期优化点
          */
-        PriceRule priceRule = priceMapper.selectOne(null);
+
+        String cityCode = forecastPriceDTO.getCityCode();
+        String vehicleType = forecastPriceDTO.getVehicleType();
+
+        PriceRule priceRule = priceMapper.selectOne(new QueryWrapper<PriceRule>()
+                .eq("fare_type", cityCode + "$" + vehicleType));
 
         double price = getPrice(distance, duration, priceRule);
 

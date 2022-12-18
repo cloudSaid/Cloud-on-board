@@ -24,25 +24,12 @@ public class ForecastPriceService
 
     /**
      * 计价
-     * @param depLongitude
-     * @param depLatitude
-     * @param destLongitude
-     * @param destLatitude
      * @return
      */
-    public ResponseResult forecastPrice(String depLongitude,String depLatitude,String destLongitude,String destLatitude)
+    public ResponseResult forecastPrice(ForecastPriceDTO forecastPriceDTO)
     {
-      log.info(depLongitude);
-      log.info(depLatitude);
-      log.info(destLongitude);
-      log.info(destLatitude);
 
-        ForecastPriceDTO forecastPriceDTO = new ForecastPriceDTO();
-        forecastPriceDTO.setDepLongitude(depLongitude);
-        forecastPriceDTO.setDepLatitude(depLatitude);
-        forecastPriceDTO.setDestLongitude(destLongitude);
-        forecastPriceDTO.setDestLatitude(destLatitude);
-        //调用地图服务获取价格
+        //调用计价服务获取价格
         ResponseResult<ForecastPriceResponse> forecastPriceResponseResponseResult = priceClient.forecastPrice(forecastPriceDTO);
         ForecastPriceResponse forecastPriceResponse = forecastPriceResponseResponseResult.getData();
 

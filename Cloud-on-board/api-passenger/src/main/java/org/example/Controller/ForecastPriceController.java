@@ -29,14 +29,9 @@ public class ForecastPriceController
      */
     @RequestMapping("/forecast-price")
     public ResponseResult forecastPrice(@RequestBody ForecastPriceDTO forecastPriceDTO)
-    {   //出发点经纬度
-        String depLongitude = forecastPriceDTO.getDepLongitude();
-        String depLatitude = forecastPriceDTO.getDepLatitude();
-        //目的地经纬度
-        String destLongitude = forecastPriceDTO.getDestLongitude();
-        String destLatitude = forecastPriceDTO.getDestLatitude();
+    {
         log.info(forecastPriceDTO.toString());
-        return forecastPriceService.forecastPrice(depLongitude,depLatitude,destLongitude,destLatitude);
+        return forecastPriceService.forecastPrice(forecastPriceDTO);
     }
 
 }
