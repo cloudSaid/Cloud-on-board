@@ -61,7 +61,7 @@ public class TerminalClient {
         return ResponseResult.success(terminalResponse);
     }
 
-    public ResponseResult aroundsearch(String center,String radius){
+    public ResponseResult<List<TerminalResponse>> aroundsearch(String center,Integer radius){
         StringBuilder url = new StringBuilder();
         url.append(AmapConfigConstants.TERMINAL_ADD);
         url.append("?");
@@ -77,9 +77,18 @@ public class TerminalClient {
         String body = forEntity.getBody();
         JSONObject result = JSONObject.fromObject(body);
         JSONObject data = result.getJSONObject("data");
+        if (data.isNullObject()){
+            List<TerminalResponse> objects = new ArrayList<>();
+            TerminalResponse terminalResponse = new TerminalResponse();
+            terminalResponse.setTid("1");
+            return ResponseResult.success(objects);
+        }
         JSONArray results = data.getJSONArray("results");
 
+
         List<TerminalResponse> terminalResponseArrayList = new ArrayList<>();
+
+
 
         for (int i = 0;i < results.size();i++){
             TerminalResponse terminalResponse = new TerminalResponse();

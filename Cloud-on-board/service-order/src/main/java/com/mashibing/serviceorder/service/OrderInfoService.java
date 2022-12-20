@@ -3,22 +3,29 @@ package com.mashibing.serviceorder.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.constant.OrderConstants;
+import com.mashibing.internalcommon.dto.ImmediateOrderTo;
 import com.mashibing.internalcommon.dto.OrderInfo;
 import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
+import com.mashibing.internalcommon.responese.TerminalResponse;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
 import com.mashibing.serviceorder.remote.PriceClient;
 import com.mashibing.serviceorder.remote.ServiceDriverUserClient;
-import com.mysql.cj.x.protobuf.MysqlxCrud;
+import com.mashibing.serviceorder.remote.ServiceMapClient;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Leo
@@ -27,6 +34,7 @@ import java.util.concurrent.TimeUnit;
  * @date 2022-12-18 1:28
  */
 @Service
+@Slf4j
 public class OrderInfoService {
 
     @Autowired
@@ -38,9 +46,19 @@ public class OrderInfoService {
     @Autowired
     private PriceClient priceClient;
 
+    @Autowired
+    private ServiceMapClient serviceMapClient;
 
     @Autowired
     private ServiceDriverUserClient serviceDriverUserClient;
+
+    public static List<Integer> radiuss = new ArrayList<>();
+
+    static {
+        radiuss.add(2000);
+        radiuss.add(4000);
+        radiuss.add(5000);
+    }
 
     public ResponseResult addOrder(OrderRequest orderRequest){
 
@@ -53,7 +71,8 @@ public class OrderInfoService {
             String sequipment = stringRedisTemplate.opsForValue().get(deviceCode);
             Integer integer = Integer.valueOf(sequipment);
             if (integer > 2){
-                return ResponseResult.fail(CommonStatusEnum.DEVICE_IS_BLACK.getCode(),CommonStatusEnum.DEVICE_IS_BLACK.getValue());
+                return ResponseResult.fail(CommonStatusEnum.DEVICE_IS_BLACK
+                        .getCode(),CommonStatusEnum.DEVICE_IS_BLACK.getValue());
             }else {
                 stringRedisTemplate.opsForValue().increment(deviceCode);
             }
@@ -71,13 +90,15 @@ public class OrderInfoService {
         ResponseResult<Boolean> result = priceClient.ifExistence(priceRule);
         boolean ifExistence = result.getData().booleanValue();
         if (!ifExistence){
-            return ResponseResult.fail(CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getCode(),CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getValue());
+            return ResponseResult.fail(CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getCode(),
+                    CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getValue());
         }
 
         //当前地区是否有司机
         ResponseResult<Boolean> withDriver = serviceDriverUserClient.ifWithDriver(cityCode);
         if (!withDriver.getData()){
-            return ResponseResult.fail(CommonStatusEnum.CITY_DRIVER_EMPTY.getCode(),CommonStatusEnum.CITY_DRIVER_EMPTY.getValue());
+            return ResponseResult.fail(CommonStatusEnum.CITY_DRIVER_EMPTY.getCode(),
+                    CommonStatusEnum.CITY_DRIVER_EMPTY.getValue());
         }
 
         //判断是否可以下单
@@ -109,6 +130,41 @@ public class OrderInfoService {
         orderInfoMapper.insert(orderInfo);
 
         return ResponseResult.success("");
+    }
+
+    public void immediateOrder(ImmediateOrderTo immediateOrderTo){
+        //获得出发点经纬度
+        String depLatitude = immediateOrderTo.getDepLatitude();
+        String depLongitude = immediateOrderTo.getDepLongitude();
+        StringBuilder stringBuilder = new StringBuilder(depLatitude);
+        stringBuilder.append(",");
+        stringBuilder.append(depLongitude);
+
+        List<List<TerminalResponse>> peripheralDrivers=new ArrayList<>();
+
+        //搜索周边车辆
+        Optional<Integer> any = radiuss.stream().filter(radius -> {
+            ResponseResult<List<TerminalResponse>> aroundsearch = serviceMapClient.
+                                    aroundsearch(stringBuilder.toString(), radius);
+
+            List<TerminalResponse> data = aroundsearch.getData();
+            if (data != null){
+                peripheralDrivers.add(data);
+                return true;
+            }
+            return false;
+        }).findAny();
+
+        //判断周边是否有车
+        if (any.isPresent()){
+            Integer distance = any.get();
+            List<TerminalResponse> terminalResponses = peripheralDrivers.get(0);
+            log.info(distance + "米内找到司机" + (terminalResponses.size() + 1) + "个");
+            return;
+        }
+
+        log.info("没有找到司机");
+
     }
 
 }
