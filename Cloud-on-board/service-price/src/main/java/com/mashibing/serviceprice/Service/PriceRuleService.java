@@ -58,4 +58,19 @@ public class PriceRuleService {
         priceRuleMapper.insert(priceRule);
         return ResponseResult.success("");
     }
+
+    public ResponseResult<Boolean> ifExistence(PriceRule priceRule) {
+        String cityCode = priceRule.getCityCode();
+        String vehicleType = priceRule.getVehicleType();
+        List<PriceRule> priceRules = priceRuleMapper.selectList(new QueryWrapper<PriceRule>()
+                .eq("city_code", cityCode)
+                .eq("vehicle_type", vehicleType)
+        );
+
+        if (priceRules.size() > 0){
+            return ResponseResult.success(true);
+        }else {
+            return ResponseResult.success(false);
+        }
+    }
 }

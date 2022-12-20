@@ -1,9 +1,19 @@
 package com.mashibing.serviceorder.remote;
+
+import com.mashibing.internalcommon.dto.ResponseResult;
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.*;
+
 /**
- * @description: TODO 
  * @author Leo
- * @date 2022-12-19 20:07
  * @version 1.0
+ * @description: TODO
+ * @date 2022-12-19 20:07
  */
-public class ServiceDriverUserClient {
+@FeignClient("service-driver-user")
+public interface ServiceDriverUserClient {
+
+
+    @RequestMapping(method = RequestMethod.GET,value = "ifWithDriver")
+    public ResponseResult<Boolean> ifWithDriver(@RequestParam String cityCode);
 }

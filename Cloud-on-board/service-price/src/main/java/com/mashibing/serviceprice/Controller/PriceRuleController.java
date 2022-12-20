@@ -30,4 +30,9 @@ public class PriceRuleController {
 
     }
 
+    @PostMapping("if-existence")
+    public ResponseResult<Boolean> ifExistence(@RequestBody PriceRule priceRule){
+        return priceRuleService.ifExistence(priceRule);
+    }
+
 }

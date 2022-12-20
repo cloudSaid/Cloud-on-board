@@ -4,10 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.constant.OrderConstants;
 import com.mashibing.internalcommon.dto.OrderInfo;
+import com.mashibing.internalcommon.dto.PriceRule;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.OrderRequest;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
+import com.mashibing.serviceorder.remote.PriceClient;
+import com.mashibing.serviceorder.remote.ServiceDriverUserClient;
 import com.mysql.cj.x.protobuf.MysqlxCrud;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +35,12 @@ public class OrderInfoService {
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
+    @Autowired
+    private PriceClient priceClient;
 
+
+    @Autowired
+    private ServiceDriverUserClient serviceDriverUserClient;
 
     public ResponseResult addOrder(OrderRequest orderRequest){
 
@@ -51,6 +59,25 @@ public class OrderInfoService {
             }
         }else {
             stringRedisTemplate.opsForValue().set(deviceCode,"1",1L, TimeUnit.DAYS);
+        }
+
+        //判断当前地区是否可以下单
+        String fareType = orderRequest.getFareType();
+        String[] split = fareType.split("$");
+        PriceRule priceRule = new PriceRule();
+        String cityCode = split[0];
+        priceRule.setCityCode(cityCode);
+        priceRule.setVehicleType(split[1]);
+        ResponseResult<Boolean> result = priceClient.ifExistence(priceRule);
+        boolean ifExistence = result.getData().booleanValue();
+        if (!ifExistence){
+            return ResponseResult.fail(CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getCode(),CommonStatusEnum.CITY_SERVICE_NOT_SERVICE.getValue());
+        }
+
+        //当前地区是否有司机
+        ResponseResult<Boolean> withDriver = serviceDriverUserClient.ifWithDriver(cityCode);
+        if (!withDriver.getData()){
+            return ResponseResult.fail(CommonStatusEnum.CITY_DRIVER_EMPTY.getCode(),CommonStatusEnum.CITY_DRIVER_EMPTY.getValue());
         }
 
         //判断是否可以下单
