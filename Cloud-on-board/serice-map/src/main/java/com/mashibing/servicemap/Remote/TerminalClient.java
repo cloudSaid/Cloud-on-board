@@ -77,12 +77,16 @@ public class TerminalClient {
         String body = forEntity.getBody();
         JSONObject result = JSONObject.fromObject(body);
         JSONObject data = result.getJSONObject("data");
+
         if (data.isNullObject()){
             List<TerminalResponse> objects = new ArrayList<>();
             TerminalResponse terminalResponse = new TerminalResponse();
-            terminalResponse.setTid("1");
+            terminalResponse.setCarId(1111L);
+            terminalResponse.setTid("2222");
+            objects.add(terminalResponse);
             return ResponseResult.success(objects);
         }
+
         JSONArray results = data.getJSONArray("results");
 
 
@@ -93,7 +97,10 @@ public class TerminalClient {
         for (int i = 0;i < results.size();i++){
             TerminalResponse terminalResponse = new TerminalResponse();
             JSONObject carResultInfo = results.getJSONObject(i);
-            long carId = carResultInfo.getLong("desc");
+            String stringCarId = carResultInfo.getString("desc");
+
+            Long carId = Long.parseLong(stringCarId);
+
             String tid = carResultInfo.getString("tid");
             terminalResponse.setCarId(carId);
             terminalResponse.setTid(tid);
@@ -102,6 +109,8 @@ public class TerminalClient {
 
         return ResponseResult.success(terminalResponseArrayList);
     }
+
+
 
 
 }

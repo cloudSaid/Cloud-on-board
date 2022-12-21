@@ -1,5 +1,7 @@
 package com.mashibing.serviceDriverUser.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.mashibing.internalcommon.dto.DriverUserWorkStatus;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.serviceDriverUser.mapper.DriverUserWorkStatusMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +38,17 @@ public class DriverUserWorkStatusService {
         driverUserWorkStatusMapper.updateById(driverInfo);
 
         return ResponseResult.success();
+    }
+
+    /**
+     * 查询指定状态的司机
+     * @param driverId
+     * @param status
+     * @return
+     */
+    public DriverUserWorkStatus selectDriverStarts(Long driverId, Integer status){
+        return driverUserWorkStatusMapper.selectOne(new QueryWrapper<DriverUserWorkStatus>().
+                eq("driver_id",driverId).eq("work_status",status));
     }
 
 }

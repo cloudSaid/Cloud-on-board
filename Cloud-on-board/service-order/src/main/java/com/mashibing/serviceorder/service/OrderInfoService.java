@@ -3,17 +3,16 @@ package com.mashibing.serviceorder.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mashibing.internalcommon.constant.CommonStatusEnum;
 import com.mashibing.internalcommon.constant.OrderConstants;
-import com.mashibing.internalcommon.dto.ImmediateOrderTo;
-import com.mashibing.internalcommon.dto.OrderInfo;
-import com.mashibing.internalcommon.dto.PriceRule;
-import com.mashibing.internalcommon.dto.ResponseResult;
+import com.mashibing.internalcommon.dto.*;
 import com.mashibing.internalcommon.request.OrderRequest;
+import com.mashibing.internalcommon.responese.OrderDriverResponse;
 import com.mashibing.internalcommon.responese.TerminalResponse;
 import com.mashibing.internalcommon.util.RedisPrefixUtils;
 import com.mashibing.serviceorder.mapper.OrderInfoMapper;
 import com.mashibing.serviceorder.remote.PriceClient;
 import com.mashibing.serviceorder.remote.ServiceDriverUserClient;
 import com.mashibing.serviceorder.remote.ServiceMapClient;
+import com.sun.java.util.jar.pack.DriverResource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +25,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * @author Leo
@@ -51,6 +52,7 @@ public class OrderInfoService {
 
     @Autowired
     private ServiceDriverUserClient serviceDriverUserClient;
+
 
     public static List<Integer> radiuss = new ArrayList<>();
 
@@ -155,11 +157,49 @@ public class OrderInfoService {
             return false;
         }).findAny();
 
+        List<OrderDriverResponse> driverResponses = new ArrayList<>();
+
         //判断周边是否有车
         if (any.isPresent()){
             Integer distance = any.get();
             List<TerminalResponse> terminalResponses = peripheralDrivers.get(0);
-            log.info(distance + "米内找到司机" + (terminalResponses.size() + 1) + "个");
+
+            Optional<TerminalResponse> driverAny = terminalResponses.stream().filter(terminalResponse -> {
+                ResponseResult<OrderDriverResponse> workableDriver = serviceDriverUserClient.
+                        getWorkableDriver(terminalResponse.getCarId());
+                if (workableDriver.getCode() == CommonStatusEnum.AVAILABLE_DRIVER_EMPTY.getCode()) {
+                    return false;
+                }
+                OrderDriverResponse driverResponse = workableDriver.getData();
+
+                //判断司机是否有正在进行中的订单
+                QueryWrapper<OrderInfo> orderInfoQueryWrapper = new QueryWrapper<>();
+
+                orderInfoQueryWrapper.eq("driver_id",driverResponse.getDriverId());
+
+                orderInfoQueryWrapper.and(queryWrapper -> queryWrapper.eq("order_status",OrderConstants.ORDER_START)
+                        .or().eq("order_status",OrderConstants.DRIVER_RECEIVE_ORDER)
+                        .or().eq("order_status",OrderConstants.DRIVER_TO_PICK_UP_PASSENGER)
+                        .or().eq("order_status",OrderConstants.DRIVER_ARRIVED_DEPARTURE)
+                        .or().eq("order_status",OrderConstants.PICK_UP_PASSENGER));
+
+                Integer integer = orderInfoMapper.selectCount(orderInfoQueryWrapper);
+                if (integer > 0){
+                    return false;
+                }
+                driverResponses.add(driverResponse);
+
+                return true;
+            }).findAny();
+
+            if (!driverAny.isPresent()){
+                log.info("没有可用司机");
+                return;
+            }
+
+            OrderDriverResponse orderDriverResponse = driverResponses.get(0);
+            log.info("可用司机为" + orderDriverResponse.toString());
+            
             return;
         }
 

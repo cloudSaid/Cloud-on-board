@@ -3,6 +3,7 @@ package com.mashibing.serviceDriverUser.controller;
 import com.mashibing.internalcommon.dto.DriverUser;
 import com.mashibing.internalcommon.dto.ResponseResult;
 import com.mashibing.internalcommon.request.VerificationCodeDTO;
+import com.mashibing.internalcommon.responese.OrderDriverResponse;
 import com.mashibing.serviceDriverUser.service.DriverService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,11 @@ public class UserController {
     @GetMapping("testDriver")
     public boolean testDriver(@RequestBody VerificationCodeDTO verificationCodeDTO){
         return driverService.testDriver(verificationCodeDTO.getDriverPhone());
+    }
+
+    @GetMapping("get-workable-driver/{carId}")
+    public ResponseResult<OrderDriverResponse> getWorkableDriver(@PathVariable("carId") long carId){
+        return driverService.getWorkableDriver(carId);
     }
 
 }

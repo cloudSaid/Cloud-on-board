@@ -82,4 +82,12 @@ public class DriverCarBindingRelationshipService {
         return ResponseResult.success("");
 
     }
+
+    public DriverCarBindingRelationship getDriverUseCarId(long carId){
+        QueryWrapper<DriverCarBindingRelationship> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("car_id",carId);
+        queryWrapper.eq("bind_state",DriverCarConstants.DRIVER_CAR_BIND);
+        return driverCarBindingRelationshipMapper.selectOne(queryWrapper);
+    }
+
 }
